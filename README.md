@@ -1,16 +1,76 @@
-# React + Vite
+# Проєкт: Redux Toolkit та createAsyncThunk
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Це навчальний проєкт, створений на React + Vite, що демонструє повний цикл асинхронної роботи з даними за допомогою **Redux Toolkit**.
 
-Currently, two official plugins are available:
+Він виконує запит до API `jsonplaceholder` для отримання списку завдань (todos), коректно обробляє стани завантаження (`loading`), успіху (`succeeded`) та помилки (`failed`), і відображає відповідний результат у компоненті.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Опис реалізації
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Проєкт ілюструє ключові концепції Redux Toolkit для роботи з API:
 
-## Expanding the ESLint configuration
+1.  **`createAsyncThunk` (`fetchTodos`):**
+    * Створює асинхронний "thunk" (екшен), який виконує `fetch` запит до `https://jsonplaceholder.typicode.com/todos`.
+    * Використовує `try/catch` та `rejectWithValue` для коректної обробки помилок мережі.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2.  **`createSlice` (`exampleSlice`):**
+    * Описує "зріз" стану `todos`, який містить `data`, `status` та `error`.
+    * Використовує `extraReducers` для автоматичної обробки трьох станів Promise, що повертає `fetchTodos`:
+        * **`pending`**: Встановлює `status = 'loading'`.
+        * **`fulfilled`**: Встановлює `status = 'succeeded'` та записує отримані дані (`action.payload`) у `state.data`.
+        * **`rejected`**: Встановлює `status = 'failed'` та записує текст помилки у `state.error`.
+
+3.  **`ExampleComponent.jsx` (Компонент):**
+    * Використовує хук `useDispatch`, щоб викликати екшен `fetchTodos()` один раз при завантаженні (через `useEffect`).
+    * Використовує хук `useSelector` для підписки на стан `todos` зі `store`.
+    * Рендерить різний UI залежно від поточного `status`: "Loading...", "Error: ..." або список завдань (`data.map(...)`).
+
+## Стек технологій
+
+* React
+* Vite
+* @reduxjs/toolkit
+* react-redux
+
+---
+
+## Встановлення та запуск
+
+1.  **Клонуйте репозиторій:**
+    ```bash
+    # Замініть [URL] на посилання вашого репозиторію
+    git clone [URL-ВАШОГО-РЕПОЗИТОРІЮ]
+    ```
+
+2.  **Перейдіть до каталогу проєкту:**
+    ```bash
+    # Назва папки з вашого завдання (може бути іншою)
+    cd my-redux-app
+    ```
+
+3.  **Встановіть базові залежності:**
+    ```bash
+    npm install
+    ```
+
+4.  **Встановіть Redux Toolkit та React Redux:**
+    ```bash
+    npm install @reduxjs/toolkit react-redux
+    ```
+
+5.  **Запустіть проєкт у режимі розробки:**
+    ```bash
+    npm run dev
+    ```
+
+    Проєкт буде доступний за адресою `http://localhost:5173/` (або іншим портом, вказаним у терміналі).
+
+---
+
+## Демо-версія
+
+Ви можете переглянути живу (live) демо-версію проєкту, розгорнуту на Vercel
+
+https://homework-47-three.vercel.app/
+
